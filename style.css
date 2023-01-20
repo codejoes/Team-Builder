@@ -1,0 +1,72 @@
+body {
+    margin: 0;
+}
+
+.header {
+    width: 100vw;
+    height: 100px;
+    background-color: red;
+}
+
+.bg-red {
+    background-color:red;
+}
+
+.bg-blue {
+    background-color: blue;
+}
+
+.bg-grey {
+    background-color: rgba(245, 245, 245, 0.749);
+}
+
+.border-shadow {
+    box-shadow: 2px 2px 5px 0px black;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    color: white;
+    width: 16rem;
+    margin: 5px 0px;
+    border-radius: 0px;
+}
+
+.card p{
+    color: black;
+}
+
+#team-members {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.margin-10 {
+    margin-left: 10px;
+}
+
+.margin-15 {
+    margin-left: 20px;
+}
+
+.margin-tb-25 {
+    margin: 25px 5px;
+}
+
+.inner-margin {
+    width: 80%;
+}
