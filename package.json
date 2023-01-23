@@ -1,0 +1,24 @@
+{
+  "name": "team-builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codejoes/Team-Builder.git"
+  },
+  "author": "Joseph Sell",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codejoes/Team-Builder/issues"
+  },
+  "homepage": "https://github.com/codejoes/Team-Builder#readme",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "inquirer": "^9.1.4"
+  }
+}
