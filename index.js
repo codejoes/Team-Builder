@@ -1,33 +1,286 @@
 import inquirer from 'inquirer';
 import fs from 'fs';
 
+//CLASSES
+class Manager{
+    constructor(name, ID, contact, office) {
+        this.name = name;
+        this.ID = ID;
+        this.contact = contact;
+        this.office = office;
+    }
 
+    getOffice() {
+        return this.office;
+    }
 
-const firstQuestions = [
+    getRole() {
+        return "Manager";
+    }
+
+    getName() {
+        return this.name;
+    }
+
+    getID() {
+        return this.ID;
+    }
+    
+    getEmail() {
+        return this.contact;
+    }
+}
+
+class Engineer{
+    constructor(name, ID, contact, github){
+        this.name = name;
+        this.ID = ID;
+        this.contact = contact;
+        this.github = github;
+    }
+
+    getGit() {
+        return this.github;
+    }
+
+    getRole() {
+        return "Engineer";
+    }
+
+    getName() {
+        return this.name;
+    }
+
+    getID() {
+        return this.ID;
+    }
+    
+    getEmail() {
+        return this.contact;
+    }
+}
+
+class Intern{
+    constructor(name, ID, contact, school){
+        this.name = name;
+        this.ID = ID;
+        this.contact = contact;
+        this.school = school;
+    }
+
+    getSchool() {
+        return this.school;
+    }
+
+    getRole() {
+        return "Intern";
+    }
+
+    getName() {
+        return this.name;
+    }
+
+    getID() {
+        return this.ID;
+    }
+    
+    getEmail() {
+        return this.contact;
+    }
+}
+
+//MAIN QUESTIONS
+const questions = [
     {
         type: 'input',
-        name: 'managerName',
-        message: 'Please input the name of the manager: '
+        name: 'name',
+        message: 'Please input a name: '
     },
     {
         type: 'input',
-        name: 'managerID',
-        message: 'Please input the ID number of the manager: '
+        name: 'ID',
+        message: 'Please input an ID number: '
     },
     {
         type: 'input',
-        name: 'email',
-        message: 'Please input the email of the manager: '
+        name: 'contact',
+        message: 'Please input an email: '
     },
     {
-        type: 'input',
-        name: 'github',
-        message: 'Please input the github username of the manager: '
+        type: 'list',
+        name: 'role',
+        message: 'Please select the role of this team member: ',
+        choices: ['Manager', 'Engineer', 'Intern', "I don't want to add another team member."]
     },
 ];
 
-const generateManagerCard = ({managerName, managerID, email, github}) =>
+//ARRAY TO STORE TEAM MEMBERS
+const yourTeam = [];
 
+//START CREATING TEAM WITH INQUIRER
+function createTeam() { 
+    inquirer
+        .prompt([...questions])
+        .then((answers) => {
+            inquirer
+                .prompt([
+                    {
+                        when: () => answers.role === "Manager",
+                        type: 'input',
+                        message: "What's their office number?",
+                        name: "office",
+                    },
+                    {
+                        when: () => answers.role === "Engineer",
+                        type: 'input',
+                        message: "What's their github username?",
+                        name: "github",
+                    },
+                    {
+                        when: () => answers.role === "Intern",
+                        type: 'input',
+                        message: "What's the name of their school?",
+                        name: "school",
+                    },
+                    {
+                        type: 'confirm',
+                        message: 'Do you want to add another team member?',
+                        name: 'add',
+                    }
+                ])
+                //NEW OBJECTS ARE CREATED WITH "WHEN" QUESTIONS ANSWERED
+                .then((answers2) => {
+                    if (answers.role === "Manager") {
+                        const manager = new Manager(answers.name, answers.ID, answers.contact, answers2.office);
+                        yourTeam.push(manager);
+                    }
+
+                    if (answers.role === "Engineer") {
+                        const engineer = new Engineer(answers.name, answers.ID, answers.contact, answers2.github);
+                        yourTeam.push(engineer);
+                    }
+
+                    if (answers.role === "Intern") {
+                        const intern = new Intern(answers.name, answers.ID, answers.contact, answers2.school);
+                        yourTeam.push(intern);
+                    }
+
+                    //CONTINUES TO CALL FUNCTION IF USER SELECTS "Y"
+                    if (answers2.add) {
+                        createTeam();
+                    } else {
+                        createFullHTML();
+                    }
+
+                })
+        }) 
+}
+
+//CALL INITIAL FUNCTION
+createTeam();
+
+//CREATE HTML
+function createFullHTML () {
+
+    //ARRAY TO STORE HTML ELEMENTS IN ORDER
+    const htmlEl = [];
+
+    //FILTERS INDIVIDUAL OBJECTS IN THE ARRAY BY ROLE
+    yourTeam.filter((employee) => employee.getRole() === "Manager").forEach((obj) => {
+        //THEN CREATES AN ARRAY BASED ON OBJECTS VALUES
+        let arr = (Object.values(obj));
+
+        //THEN GENERATES THE HTML USING THAT ARRAY
+        htmlEl.push(generateManagerCard(arr));
+    });
+
+   yourTeam.filter((employee) => employee.getRole() === "Engineer").forEach((obj) => {
+        let arr = (Object.values(obj));
+
+        htmlEl.push(generateEngineerCard(arr));
+    });
+
+    yourTeam.filter((employee) => employee.getRole() === "Intern").forEach((obj) => {
+        let arr = (Object.values(obj));
+
+        htmlEl.push(generateInternCard(arr));
+    });
+
+    //THEN THE "index.html" IS GENERATED FROM THE ARRAY OF GENERATED HTML
+    const fullHTML = generateMainHTML(htmlEl);
+    fs.writeFile('index1.html', fullHTML, (err) => 
+        err ? console.log(err) : console.log('Successfully created index1.html!')
+    );
+}
+
+//ALL SEPARATE HTML GENERATORS
+const generateManagerCard = ([name, ID, contact, office]) =>
+`
+<div class="card bg-grey border-shadow">
+    <header class="bg-blue">
+        <h3 class="margin-15">${name}</h3>
+        <h4 class="margin-10">☕ Manager</h4>
+    </header>
+
+    <div class="flex-column margin-tb-25">
+        <div class="card inner-margin">
+            <p class="margin-10">${ID}</p>
+        </div>
+        <div class="card inner-margin">
+            <p class="margin-10">Email: <a href="mailto:${contact}">${contact}</a></p>
+        </div>
+        <div class="card inner-margin">
+            <p class="margin-10">Office: #${office}</p>
+        </div>
+    </div>
+</div>
+`
+
+const generateEngineerCard = ([name, ID, contact, github]) => 
+`
+<div class="card bg-grey border-shadow">
+    <header class="bg-blue">
+        <h3 class="margin-15">${name}</h3>
+        <h4 class="margin-10">👓 Engineer</h4>
+    </header>
+
+    <div class="flex-column margin-tb-25">
+        <div class="card inner-margin">
+            <p class="margin-10">${ID}</p>
+        </div>
+        <div class="card inner-margin">
+            <p class="margin-10">Email: <a href="mailto:${contact}">${contact}</a></p>
+        </div>
+        <div class="card inner-margin">
+            <p class="margin-10">GitHub: <a href="https://github.com/${github}">${github}</p>
+        </div>
+    </div>
+</div>
+`
+
+const generateInternCard = ([name, ID, contact, school]) =>
+`
+<div class="card bg-grey border-shadow">
+    <header class="bg-blue">
+        <h3 class="margin-15">${name}</h3>
+        <h4 class="margin-10">👨‍🎓 Intern</h4>
+    </header>
+
+    <div class="flex-column margin-tb-25">
+        <div class="card inner-margin">
+            <p class="margin-10">${ID}</p>
+        </div>
+        <div class="card inner-margin">
+            <p class="margin-10">Email: <a href="mailto:${contact}">${contact}</a></p>
+        </div>
+        <div class="card inner-margin">
+            <p class="margin-10">School: ${school}</p>
+        </div>
+    </div>
+</div>
+`
+
+const generateMainHTML = ([...html]) =>
 `
 <!DOCTYPE html>
 <html lang="en">
@@ -50,24 +303,7 @@ const generateManagerCard = ({managerName, managerID, email, github}) =>
 
     <div class="column">
         <div id="team-members">
-            <div class="card bg-grey border-shadow">
-                <header class="bg-blue">
-                    <h3 class="margin-15">${managerName}</h3>
-                    <h4 class="margin-10">☕ Manager</h4>
-                </header>
-
-                <div class="flex-column margin-tb-25">
-                    <div class="card inner-margin">
-                        <p class="margin-10">${managerID}</p>
-                    </div>
-                    <div class="card inner-margin">
-                        <p class="margin-10">Email: <a href="mailto:${email}">${email}</a></p>
-                    </div>
-                    <div class="card inner-margin">
-                        <p class="margin-10">GitHub: <a href="https://github.com/${github}">${github}</a></p>
-                    </div>
-                </div>
-            </div>
+            ${html}
         </div>
 
     </div>
@@ -80,16 +316,3 @@ const generateManagerCard = ({managerName, managerID, email, github}) =>
             
 </html>
 `
-
-inquirer
-    .prompt([
-        ...firstQuestions,
-    ])
-
-    .then((answers) => {
-        const managerDiv = generateManagerCard(answers);
-        
-        fs.writeFile('index1.html', managerDiv, (err) => 
-        err ? console.log(err) : console.log('Successfully created index1.html!')
-        );
-    }); 
