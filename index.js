@@ -252,7 +252,7 @@ const generateEngineerCard = ([name, ID, contact, github]) =>
             <p class="margin-10">Email: <a href="mailto:${contact}">${contact}</a></p>
         </div>
         <div class="card inner-margin">
-            <p class="margin-10">GitHub: <a href="https://github.com/${github}">${github}</p>
+            <p class="margin-10">GitHub: <a href="https://github.com/${github}">${github}</a></p>
         </div>
     </div>
 </div>
